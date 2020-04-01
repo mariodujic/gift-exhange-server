@@ -1,11 +1,9 @@
 package com.groundzero.giftexchange.user.controller;
 
-import com.groundzero.giftexchange.common.Response;
-import com.groundzero.giftexchange.jwt.entity.JwtResponse;
 import com.groundzero.giftexchange.jwt.service.JwtUserDetailsService;
 import com.groundzero.giftexchange.jwt.utils.JwtUtils;
-import com.groundzero.giftexchange.user.model.UserEntity;
 import com.groundzero.giftexchange.user.model.User;
+import com.groundzero.giftexchange.user.model.UserEntity;
 import com.groundzero.giftexchange.user.model.UserResponse;
 import com.groundzero.giftexchange.user.repository.UserInfoRepository;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -39,8 +37,13 @@ public class UserController {
     userInfoRepository.save(userEntity);
 
     UserDetails userDetails = jwtUserDetailsService.loadUserByUsername(userEntity.getUsername());
+
     String token = jwtUtils.generateToken(userDetails);
 
+    /**
+     * TODO better implementation required
+     * @see com.groundzero.giftexchange.common.Response
+     */
     return new UserResponse(
         200,
         "User successfully created",
