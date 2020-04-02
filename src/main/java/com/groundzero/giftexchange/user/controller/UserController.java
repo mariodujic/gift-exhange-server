@@ -1,10 +1,11 @@
 package com.groundzero.giftexchange.user.controller;
 
+import com.groundzero.giftexchange.common.Response;
 import com.groundzero.giftexchange.jwt.service.JwtUserDetailsService;
 import com.groundzero.giftexchange.jwt.utils.JwtUtils;
+import com.groundzero.giftexchange.user.model.RegisterUserData;
 import com.groundzero.giftexchange.user.model.User;
 import com.groundzero.giftexchange.user.model.UserEntity;
-import com.groundzero.giftexchange.user.model.UserResponse;
 import com.groundzero.giftexchange.user.repository.UserInfoRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -28,7 +29,7 @@ public class UserController {
   }
 
   @PostMapping("/user")
-  public UserResponse create(@RequestBody UserEntity userEntity) throws ValidationException {
+  public Response create(@RequestBody UserEntity userEntity) throws ValidationException {
 
     if (userInfoRepository.existsByUsername(userEntity.getUsername())) {
       throw new ValidationException("Username already exists");
@@ -40,14 +41,10 @@ public class UserController {
 
     String token = jwtUtils.generateToken(userDetails);
 
-    /**
-     * TODO better implementation required
-     * @see com.groundzero.giftexchange.common.Response
-     */
-    return new UserResponse(
+    return new Response(
         200,
         "User successfully created",
-        new UserResponse.Data(
+        new RegisterUserData(
             token,
             new User(
                 userEntity.getFirstName(),
