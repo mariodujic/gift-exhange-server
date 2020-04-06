@@ -26,9 +26,9 @@ class JwtController {
     this.jwtUtils = jwtUtils;
     this.jwtUserDetailsService = jwtUserDetailsService;
   }
-
-  @RequestMapping(value = "/authenticate", method = RequestMethod.POST)
-  public Response createAuthenticationToken(@RequestBody JwtRequest jwtRequest) {
+  // TODO handle no bearer
+  @RequestMapping(value = "/authenticate-with-credentials", method = RequestMethod.POST)
+  public Response createAuthenticationTokenWithCredentials(@RequestBody JwtRequest jwtRequest) {
     try {
       authenticate(jwtRequest.getUsername(), jwtRequest.getPassword());
     } catch (Exception e) {
@@ -37,7 +37,18 @@ class JwtController {
 
     UserDetails userDetails = jwtUserDetailsService.loadUserByUsername(jwtRequest.getUsername());
     String token = jwtUtils.generateToken(userDetails);
-    return new Response(200, "Successful access token fetch", new JwtAccessResponse(token));
+    return new Response(200, "Successfully fetched access token", new JwtAccessResponse(token));
+  }
+
+  @RequestMapping(value = "/authenticate-with-token", method = RequestMethod.POST)
+  public Response createAuthenticationTokenWithToken(@RequestHeader(value = "Authorization") String authorization) {
+
+    // TODO handle error
+    String username = jwtUtils.getUsernameFromToken(authorization.substring(7));
+
+    UserDetails userDetails = jwtUserDetailsService.loadUserByUsername(username);
+    String token = jwtUtils.generateToken(userDetails);
+    return new Response(200, "Successfully fetched access token", new JwtAccessResponse(token));
   }
 
   private void authenticate(String username, String password) {
