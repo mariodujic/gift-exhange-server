@@ -1,10 +1,10 @@
 package com.groundzero.giftexchange.jwt.controller;
 
+import com.groundzero.giftexchange.common.Response;
+import com.groundzero.giftexchange.jwt.entity.JwtAccessResponse;
 import com.groundzero.giftexchange.jwt.entity.JwtRequest;
-import com.groundzero.giftexchange.jwt.entity.JwtResponse;
 import com.groundzero.giftexchange.jwt.service.JwtUserDetailsService;
 import com.groundzero.giftexchange.jwt.utils.JwtUtils;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -27,7 +27,7 @@ class JwtController {
   }
 
   @RequestMapping(value = "/authenticate", method = RequestMethod.POST)
-  public ResponseEntity<?> createAuthenticationToken(@RequestBody JwtRequest jwtRequest) throws ValidationException {
+  public Response createAuthenticationToken(@RequestBody JwtRequest jwtRequest) throws ValidationException {
     try {
       authenticate(jwtRequest.getUsername(), jwtRequest.getPassword());
     } catch (Exception e) {
@@ -36,7 +36,7 @@ class JwtController {
 
     UserDetails userDetails = jwtUserDetailsService.loadUserByUsername(jwtRequest.getUsername());
     String token = jwtUtils.generateToken(userDetails);
-    return ResponseEntity.ok(new JwtResponse(token));
+    return new Response(200, "Successful access token fetch", new JwtAccessResponse(token));
   }
 
   private void authenticate(String username, String password) {
