@@ -1,5 +1,6 @@
 package com.groundzero.giftexchange.jwt.controller;
 
+import com.groundzero.giftexchange.common.EmptyDataResponse;
 import com.groundzero.giftexchange.common.Response;
 import com.groundzero.giftexchange.jwt.entity.JwtAccessResponse;
 import com.groundzero.giftexchange.jwt.entity.JwtRequest;
@@ -27,11 +28,11 @@ class JwtController {
   }
 
   @RequestMapping(value = "/authenticate", method = RequestMethod.POST)
-  public Response createAuthenticationToken(@RequestBody JwtRequest jwtRequest) throws ValidationException {
+  public Response createAuthenticationToken(@RequestBody JwtRequest jwtRequest) {
     try {
       authenticate(jwtRequest.getUsername(), jwtRequest.getPassword());
     } catch (Exception e) {
-      throw new ValidationException("Wrong username or password");
+      return new Response(500, "Wrong username or password", new EmptyDataResponse());
     }
 
     UserDetails userDetails = jwtUserDetailsService.loadUserByUsername(jwtRequest.getUsername());
