@@ -14,8 +14,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.xml.bind.ValidationException;
-
 @RestController
 public class UserController {
 
@@ -30,7 +28,7 @@ public class UserController {
   }
 
   @PostMapping("/user")
-  public Response create(@RequestBody UserEntity userEntity) throws ValidationException {
+  public Response create(@RequestBody UserEntity userEntity) {
 
     if (userInfoRepository.existsByUsername(userEntity.getUsername())) {
       return new Response(500, "User already exists", new EmptyDataResponse());
