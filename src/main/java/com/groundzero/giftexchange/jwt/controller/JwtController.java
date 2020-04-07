@@ -3,7 +3,8 @@ package com.groundzero.giftexchange.jwt.controller;
 import com.groundzero.giftexchange.common.EmptyDataResponse;
 import com.groundzero.giftexchange.common.Response;
 import com.groundzero.giftexchange.jwt.entity.JwtAccessResponse;
-import com.groundzero.giftexchange.jwt.entity.JwtRequest;
+import com.groundzero.giftexchange.jwt.entity.JwtCredentialsRequest;
+import com.groundzero.giftexchange.jwt.entity.JwtRefresherTokenRequest;
 import com.groundzero.giftexchange.jwt.service.JwtUserDetailsService;
 import com.groundzero.giftexchange.jwt.utils.JwtUtils;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -11,7 +12,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
-import javax.xml.bind.ValidationException;
+import java.util.Map;
 
 @RestController
 @CrossOrigin
@@ -26,26 +27,32 @@ class JwtController {
     this.jwtUtils = jwtUtils;
     this.jwtUserDetailsService = jwtUserDetailsService;
   }
-  // TODO handle no bearer
-  @RequestMapping(value = "/authenticate-with-credentials", method = RequestMethod.POST)
-  public Response createAuthenticationTokenWithCredentials(@RequestBody JwtRequest jwtRequest) {
+
+  @RequestMapping(value = "/authenticate/credentials", method = RequestMethod.POST)
+  public Response createAuthenticationTokenWithCredentials(@RequestBody JwtCredentialsRequest request) {
     try {
-      authenticate(jwtRequest.getUsername(), jwtRequest.getPassword());
+      authenticate(request.getUsername(), request.getPassword());
     } catch (Exception e) {
       return new Response(500, "Wrong username or password", new EmptyDataResponse());
     }
 
-    UserDetails userDetails = jwtUserDetailsService.loadUserByUsername(jwtRequest.getUsername());
+    UserDetails userDetails = jwtUserDetailsService.loadUserByUsername(request.getUsername());
     String token = jwtUtils.generateToken(userDetails);
     return new Response(200, "Successfully fetched access token", new JwtAccessResponse(token));
   }
 
-  @RequestMapping(value = "/authenticate-with-token", method = RequestMethod.POST)
-  public Response createAuthenticationTokenWithToken(@RequestHeader(value = "Authorization") String authorization) {
+  @RequestMapping(value = "/authenticate/token", method = RequestMethod.POST)
+  public Response createAuthenticationTokenWithToken(@RequestBody JwtRefresherTokenRequest request) {
 
-    // TODO handle error
-    String username = jwtUtils.getUsernameFromToken(authorization.substring(7));
+    Map<Boolean, String> validRefresherToken = jwtUtils.validateToken(request.getRefresherToken());
 
+    for (Map.Entry<Boolean, String> entry : validRefresherToken.entrySet()) {
+      boolean isTokenValid = !entry.getKey();
+      if (isTokenValid) {
+        return new Response(500, entry.getValue(), new EmptyDataResponse());
+      }
+    }
+    String username = jwtUtils.getUsernameFromToken(request.getRefresherToken());
     UserDetails userDetails = jwtUserDetailsService.loadUserByUsername(username);
     String token = jwtUtils.generateToken(userDetails);
     return new Response(200, "Successfully fetched access token", new JwtAccessResponse(token));

@@ -1,8 +1,6 @@
 package com.groundzero.giftexchange.jwt.utils;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
@@ -19,7 +17,7 @@ class JwtUtils implements Serializable {
 
   private static final long serialVersionUID = -2550185165626007488L;
 
-  public static final long JWT_TOKEN_VALIDITY = 5 * 60 * 60;
+  public static final long JWT_TOKEN_VALIDITY = 60;
 
   @Value("${jwt.secret}")
   private String secret;
@@ -66,5 +64,24 @@ class JwtUtils implements Serializable {
   public Boolean validateToken(String token, UserDetails userDetails) {
     final String username = getUsernameFromToken(token);
     return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
+  }
+
+  public Map<Boolean, String> validateToken(String token) {
+    Map<Boolean, String> validationResponse = new HashMap<>();
+    try {
+      Jwts.parser().setSigningKey(secret).parseClaimsJws(token);
+      validationResponse.put(true, "");
+    } catch (SignatureException ex) {
+      validationResponse.put(false, "Invalid JWT Signature");
+    } catch (MalformedJwtException ex) {
+      validationResponse.put(false, "Invalid JWT token");
+    } catch (ExpiredJwtException ex) {
+      validationResponse.put(false, "Expired JWT token");
+    } catch (UnsupportedJwtException ex) {
+      validationResponse.put(false, "Unsupported JWT exception");
+    } catch (IllegalArgumentException ex) {
+      validationResponse.put(false, "Jwt claims string is empty");
+    }
+    return validationResponse;
   }
 }
