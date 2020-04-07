@@ -1,7 +1,11 @@
-package com.groundzero.giftexchange.user.model;
+package com.groundzero.giftexchange.user.data;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class User {
+  @JsonProperty("first_name")
   private String firstName;
+  @JsonProperty("last_name")
   private String lastName;
   private String username;
 

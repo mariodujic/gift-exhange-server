@@ -1,4 +1,4 @@
-package com.groundzero.giftexchange.user.model;
+package com.groundzero.giftexchange.user.entity;
 
 import javax.persistence.*;
 

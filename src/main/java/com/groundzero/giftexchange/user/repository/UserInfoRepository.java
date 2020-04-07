@@ -1,6 +1,6 @@
 package com.groundzero.giftexchange.user.repository;
 
-import com.groundzero.giftexchange.user.model.UserEntity;
+import com.groundzero.giftexchange.user.entity.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface UserInfoRepository extends JpaRepository<UserEntity, Integer> {
