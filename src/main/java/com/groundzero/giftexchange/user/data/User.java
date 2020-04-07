@@ -3,13 +3,15 @@ package com.groundzero.giftexchange.user.data;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class User {
+  private long id;
   @JsonProperty("first_name")
   private String firstName;
   @JsonProperty("last_name")
   private String lastName;
   private String username;
 
-  public User(String firstName, String lastName, String username) {
+  public User(long id, String firstName, String lastName, String username) {
+    this.id = id;
     this.firstName = firstName;
     this.lastName = lastName;
     this.username = username;
@@ -39,6 +41,15 @@ public class User {
 
   public User setUsername(String username) {
     this.username = username;
+    return this;
+  }
+
+  public long getId() {
+    return id;
+  }
+
+  public User setId(long id) {
+    this.id = id;
     return this;
   }
 }

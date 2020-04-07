@@ -5,12 +5,14 @@ import com.groundzero.giftexchange.common.Response;
 import com.groundzero.giftexchange.jwt.data.JwtAccessToken;
 import com.groundzero.giftexchange.jwt.service.JwtUserDetailsService;
 import com.groundzero.giftexchange.jwt.utils.JwtUtils;
-import com.groundzero.giftexchange.user.api.LoginRequest;
-import com.groundzero.giftexchange.user.api.RegistrationRequest;
 import com.groundzero.giftexchange.user.api.LoginDataResponse;
-import com.groundzero.giftexchange.user.data.RegistrationDto;
+import com.groundzero.giftexchange.user.api.LoginRequest;
 import com.groundzero.giftexchange.user.api.RegistrationDataResponse;
+import com.groundzero.giftexchange.user.api.RegistrationRequest;
+import com.groundzero.giftexchange.user.data.RegistrationDto;
 import com.groundzero.giftexchange.user.data.UserDao;
+import com.groundzero.giftexchange.user.entity.UserEntity;
+import com.groundzero.giftexchange.user.entity.UserEntityDto;
 import com.groundzero.giftexchange.user.repository.UserInfoRepository;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -34,27 +36,7 @@ public class UserController {
     this.authenticationManager = authenticationManager;
   }
 
-  @PostMapping("/user/register")
-  public Response createUser(@RequestBody RegistrationRequest request) {
-
-    if (userInfoRepository.existsByUsername(request.getUsername())) {
-      return new Response(500, "User already exists", new EmptyDataResponse());
-    }
-    userInfoRepository.save(RegistrationDto.toEntity(request));
-    UserDetails userDetails = jwtUserDetailsService.loadUserByUsername(request.getUsername());
-    String token = jwtUtils.generateToken(userDetails);
-    Date expirationDate = jwtUtils.getExpirationDateFromToken(token);
-
-    return new Response(
-        200,
-        "User successfully created",
-        new RegistrationDataResponse(
-            new JwtAccessToken(token, expirationDate),
-            UserDao.fromRegistration(request))
-    );
-  }
-
-  @RequestMapping(value = "/user/login", method = RequestMethod.POST)
+  @PostMapping("/user/login")
   public Response loginUser(@RequestBody LoginRequest request) {
     try {
       authenticate(request.getUsername(), request.getPassword());
@@ -66,6 +48,47 @@ public class UserController {
     String token = jwtUtils.generateToken(userDetails);
     Date expirationDate = jwtUtils.getExpirationDateFromToken(token);
     return new Response(200, "Successfully login", new LoginDataResponse(new JwtAccessToken(token, expirationDate)));
+  }
+
+  @PostMapping("/user/register")
+  public Response createUser(@RequestBody RegistrationRequest request) {
+
+    if (userInfoRepository.existsByUsername(request.getUsername())) {
+      return new Response(500, "User already exists", new EmptyDataResponse());
+    }
+    UserEntity userEntity = RegistrationDto.toEntity(request);
+    return getUserTokenResponse(userEntity, userEntity, request.getUsername());
+  }
+
+  @PatchMapping("/user/update")
+  public Response updateUser(
+      @RequestHeader(value = "Authorization") String bearerAuthorization,
+      @RequestBody RegistrationRequest request
+  ) {
+
+    String username = jwtUtils.getUsernameFromToken(bearerAuthorization.substring(7));
+    UserEntity userEntity = userInfoRepository.findByUsername(username);
+    if(userEntity == null) {
+      return new Response(500, "User not found", new EmptyDataResponse());
+    }
+
+    UserEntity updatedUserEntity = UserEntityDto.fromRegistrationRequest(userEntity, request);
+    return getUserTokenResponse(userEntity, updatedUserEntity, updatedUserEntity.getUsername());
+  }
+
+  private Response getUserTokenResponse(UserEntity userEntity, UserEntity updatedUserEntity, String username2) {
+    userInfoRepository.save(updatedUserEntity);
+    UserDetails userDetails = jwtUserDetailsService.loadUserByUsername(username2);
+    String token = jwtUtils.generateToken(userDetails);
+    Date expirationDate = jwtUtils.getExpirationDateFromToken(token);
+
+    return new Response(
+        200,
+        "User successfully created",
+        new RegistrationDataResponse(
+            new JwtAccessToken(token, expirationDate),
+            UserDao.fromEntity(userEntity))
+    );
   }
 
   private void authenticate(String username, String password) {
