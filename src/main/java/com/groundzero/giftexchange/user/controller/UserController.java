@@ -60,6 +60,20 @@ public class UserController {
     return getUserTokenResponse(userEntity, userEntity, request.getUsername());
   }
 
+  @DeleteMapping("/user/delete")
+  public Response deleteUser(
+      @RequestHeader(value = "Authorization") String bearerAuthorization
+  ) {
+
+    String username = jwtUtils.getUsernameFromToken(bearerAuthorization.substring(7));
+    UserEntity userEntity = userInfoRepository.findByUsername(username);
+    if (userEntity == null) {
+      return new Response(500, "User not found", new EmptyDataResponse());
+    }
+    userInfoRepository.delete(userEntity);
+    return new Response(200, "User deleted successfully", new EmptyDataResponse());
+  }
+
   @PatchMapping("/user/update")
   public Response updateUser(
       @RequestHeader(value = "Authorization") String bearerAuthorization,
@@ -68,7 +82,7 @@ public class UserController {
 
     String username = jwtUtils.getUsernameFromToken(bearerAuthorization.substring(7));
     UserEntity userEntity = userInfoRepository.findByUsername(username);
-    if(userEntity == null) {
+    if (userEntity == null) {
       return new Response(500, "User not found", new EmptyDataResponse());
     }
 
