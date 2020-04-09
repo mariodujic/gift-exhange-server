@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Date;
 
 @RestController
+@RequestMapping("/user")
 public class UserController {
 
   private final UserInfoRepository userInfoRepository;
@@ -36,7 +37,7 @@ public class UserController {
     this.authenticationManager = authenticationManager;
   }
 
-  @PostMapping("/user/login")
+  @PostMapping("/login")
   public Response loginUser(@RequestBody LoginRequest request) {
     try {
       authenticate(request.getUsername(), request.getPassword());
@@ -50,7 +51,7 @@ public class UserController {
     return new Response(200, "Successfully login", new LoginDataResponse(new JwtAccessToken(token, expirationDate)));
   }
 
-  @PostMapping("/user/register")
+  @PostMapping("/register")
   public Response createUser(@RequestBody RegistrationRequest request) {
 
     if (userInfoRepository.existsByUsername(request.getUsername())) {
@@ -60,13 +61,13 @@ public class UserController {
     return getNewUserResponse(userEntity, userEntity);
   }
 
-  @DeleteMapping("/user/delete")
+  @DeleteMapping("/delete")
   public Response deleteUser(
       @RequestHeader(value = "Authorization") String bearerAuthorization
   ) {
 
-    String username = jwtUtils.getUsernameFromToken(bearerAuthorization.substring(7));
-    UserEntity userEntity = userInfoRepository.findByUsername(username);
+    UserEntity userEntity = getUserEntityFromToken(bearerAuthorization);
+
     if (userEntity == null) {
       return new Response(500, "User not found", new EmptyDataResponse());
     }
@@ -74,13 +75,14 @@ public class UserController {
     return new Response(200, "User deleted successfully", new EmptyDataResponse());
   }
 
-  @PatchMapping("/user/update/{id}")
+  @PatchMapping("/update")
   public Response updateUser(
-      @PathVariable("id") int id,
+      @RequestHeader(value = "Authorization") String bearerAuthorization,
       @RequestBody RegistrationRequest request
   ) {
 
-    UserEntity userEntity = jwtUserDetailsService.loadById(id);
+    UserEntity userEntity = getUserEntityFromToken(bearerAuthorization);
+
     if (userEntity.getUsername() == null) {
       return new Response(500, "User not found", new EmptyDataResponse());
     } else if (userInfoRepository.existsByUsername(request.getUsername())) {
@@ -104,6 +106,11 @@ public class UserController {
             new JwtAccessToken(token, expirationDate),
             UserDao.fromEntity(userEntity))
     );
+  }
+
+  private UserEntity getUserEntityFromToken(String bearerAuthorization) {
+    String username = jwtUtils.getUsernameFromToken(bearerAuthorization.substring(7));
+    return userInfoRepository.findByUsername(username);
   }
 
   private void authenticate(String username, String password) {
