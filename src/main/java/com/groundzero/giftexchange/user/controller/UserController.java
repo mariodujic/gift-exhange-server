@@ -57,7 +57,7 @@ public class UserController {
       return new Response(500, "User already exists", new EmptyDataResponse());
     }
     UserEntity userEntity = RegistrationDto.toEntity(request);
-    return getUserTokenResponse(userEntity, userEntity, request.getUsername());
+    return getNewUserResponse(userEntity, userEntity);
   }
 
   @DeleteMapping("/user/delete")
@@ -74,31 +74,32 @@ public class UserController {
     return new Response(200, "User deleted successfully", new EmptyDataResponse());
   }
 
-  @PatchMapping("/user/update")
+  @PatchMapping("/user/update/{id}")
   public Response updateUser(
-      @RequestHeader(value = "Authorization") String bearerAuthorization,
+      @PathVariable("id") int id,
       @RequestBody RegistrationRequest request
   ) {
 
-    String username = jwtUtils.getUsernameFromToken(bearerAuthorization.substring(7));
-    UserEntity userEntity = userInfoRepository.findByUsername(username);
-    if (userEntity == null) {
+    UserEntity userEntity = jwtUserDetailsService.loadById(id);
+    if (userEntity.getUsername() == null) {
       return new Response(500, "User not found", new EmptyDataResponse());
+    } else if (userInfoRepository.existsByUsername(request.getUsername())) {
+      return new Response(500, "Username already exists", new EmptyDataResponse());
     }
 
     UserEntity updatedUserEntity = UserEntityDto.fromRegistrationRequest(userEntity, request);
-    return getUserTokenResponse(userEntity, updatedUserEntity, updatedUserEntity.getUsername());
+    return getNewUserResponse(userEntity, updatedUserEntity);
   }
 
-  private Response getUserTokenResponse(UserEntity userEntity, UserEntity updatedUserEntity, String username2) {
+  private Response getNewUserResponse(UserEntity userEntity, UserEntity updatedUserEntity) {
     userInfoRepository.save(updatedUserEntity);
-    UserDetails userDetails = jwtUserDetailsService.loadUserByUsername(username2);
+    UserDetails userDetails = jwtUserDetailsService.loadUserByUsername(userEntity.getUsername());
     String token = jwtUtils.generateToken(userDetails);
     Date expirationDate = jwtUtils.getExpirationDateFromToken(token);
 
     return new Response(
         200,
-        "User successfully created",
+        "Request was successful",
         new RegistrationDataResponse(
             new JwtAccessToken(token, expirationDate),
             UserDao.fromEntity(userEntity))

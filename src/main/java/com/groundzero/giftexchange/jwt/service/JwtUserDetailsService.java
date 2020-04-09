@@ -28,4 +28,8 @@ public class JwtUserDetailsService implements UserDetailsService {
 
     return new User(userEntity.getUsername(), userEntity.getPassword(), new ArrayList<>());
   }
+
+  public UserEntity loadById(int id) {
+    return userInfoRepository.findById(id).orElse(new UserEntity());
+  }
 }
