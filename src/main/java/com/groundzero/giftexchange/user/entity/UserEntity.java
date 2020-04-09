@@ -1,5 +1,7 @@
 package com.groundzero.giftexchange.user.entity;
 
+import com.groundzero.giftexchange.trait.entity.TraitEntity;
+
 import javax.persistence.*;
 
 @Entity
@@ -14,17 +16,24 @@ public class UserEntity {
   private String lastName;
   private String username;
   private String password;
+  @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+  @JoinColumn(name = "trait_id")
+  private TraitEntity trait;
 
   public UserEntity() {
   }
 
-  public int getId() {
-    return id;
+  public TraitEntity getTrait() {
+    return trait;
   }
 
-  public UserEntity setId(int id) {
-    this.id = id;
+  public UserEntity setTrait(TraitEntity trait) {
+    this.trait = trait;
     return this;
+  }
+
+  public int getId() {
+    return id;
   }
 
   public String getFirstName() {

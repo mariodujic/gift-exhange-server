@@ -1,7 +1,7 @@
 package com.groundzero.giftexchange.jwt.service;
 
 import com.groundzero.giftexchange.user.entity.UserEntity;
-import com.groundzero.giftexchange.user.repository.UserInfoRepository;
+import com.groundzero.giftexchange.user.repository.UserRepository;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -13,15 +13,15 @@ import java.util.ArrayList;
 @Component
 public class JwtUserDetailsService implements UserDetailsService {
 
-  private final UserInfoRepository userInfoRepository;
+  private final UserRepository userRepository;
 
-  public JwtUserDetailsService(UserInfoRepository userInfoRepository) {
-    this.userInfoRepository = userInfoRepository;
+  public JwtUserDetailsService(UserRepository userRepository) {
+    this.userRepository = userRepository;
   }
 
   @Override
   public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-    UserEntity userEntity = userInfoRepository.findByUsername(username);
+    UserEntity userEntity = userRepository.findByUsername(username);
     if (userEntity == null) {
       throw new UsernameNotFoundException("Username not found");
     }
@@ -30,6 +30,6 @@ public class JwtUserDetailsService implements UserDetailsService {
   }
 
   public UserEntity loadById(int id) {
-    return userInfoRepository.findById(id).orElse(new UserEntity());
+    return userRepository.findById(id).orElse(new UserEntity());
   }
 }

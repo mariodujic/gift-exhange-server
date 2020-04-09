@@ -13,7 +13,7 @@ import com.groundzero.giftexchange.user.data.RegistrationDto;
 import com.groundzero.giftexchange.user.data.UserDao;
 import com.groundzero.giftexchange.user.entity.UserEntity;
 import com.groundzero.giftexchange.user.entity.UserEntityDto;
-import com.groundzero.giftexchange.user.repository.UserInfoRepository;
+import com.groundzero.giftexchange.user.repository.UserRepository;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -25,13 +25,13 @@ import java.util.Date;
 @RequestMapping("/user")
 public class UserController {
 
-  private final UserInfoRepository userInfoRepository;
+  private final UserRepository userRepository;
   private final JwtUserDetailsService jwtUserDetailsService;
   private final JwtUtils jwtUtils;
   private final AuthenticationManager authenticationManager;
 
-  public UserController(UserInfoRepository userInfoRepository, JwtUserDetailsService jwtUserDetailsService, JwtUtils jwtUtils, AuthenticationManager authenticationManager) {
-    this.userInfoRepository = userInfoRepository;
+  public UserController(UserRepository userRepository, JwtUserDetailsService jwtUserDetailsService, JwtUtils jwtUtils, AuthenticationManager authenticationManager) {
+    this.userRepository = userRepository;
     this.jwtUserDetailsService = jwtUserDetailsService;
     this.jwtUtils = jwtUtils;
     this.authenticationManager = authenticationManager;
@@ -54,7 +54,7 @@ public class UserController {
   @PostMapping("/register")
   public Response createUser(@RequestBody RegistrationRequest request) {
 
-    if (userInfoRepository.existsByUsername(request.getUsername())) {
+    if (userRepository.existsByUsername(request.getUsername())) {
       return new Response(500, "User already exists", new EmptyDataResponse());
     }
     UserEntity userEntity = RegistrationDto.toEntity(request);
@@ -71,7 +71,7 @@ public class UserController {
     if (userEntity == null) {
       return new Response(500, "User not found", new EmptyDataResponse());
     }
-    userInfoRepository.delete(userEntity);
+    userRepository.delete(userEntity);
     return new Response(200, "User deleted successfully", new EmptyDataResponse());
   }
 
@@ -85,7 +85,7 @@ public class UserController {
 
     if (userEntity.getUsername() == null) {
       return new Response(500, "User not found", new EmptyDataResponse());
-    } else if (userInfoRepository.existsByUsername(request.getUsername())) {
+    } else if (userRepository.existsByUsername(request.getUsername())) {
       return new Response(500, "Username already exists", new EmptyDataResponse());
     }
 
@@ -94,7 +94,7 @@ public class UserController {
   }
 
   private Response getNewUserResponse(UserEntity userEntity, UserEntity updatedUserEntity) {
-    userInfoRepository.save(updatedUserEntity);
+    userRepository.save(updatedUserEntity);
     UserDetails userDetails = jwtUserDetailsService.loadUserByUsername(userEntity.getUsername());
     String token = jwtUtils.generateToken(userDetails);
     Date expirationDate = jwtUtils.getExpirationDateFromToken(token);
@@ -110,7 +110,7 @@ public class UserController {
 
   private UserEntity getUserEntityFromToken(String bearerAuthorization) {
     String username = jwtUtils.getUsernameFromToken(bearerAuthorization.substring(7));
-    return userInfoRepository.findByUsername(username);
+    return userRepository.findByUsername(username);
   }
 
   private void authenticate(String username, String password) {
