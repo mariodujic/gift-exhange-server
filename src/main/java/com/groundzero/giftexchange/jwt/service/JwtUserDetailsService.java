@@ -1,7 +1,7 @@
 package com.groundzero.giftexchange.jwt.service;
 
-import com.groundzero.giftexchange.user.entity.UserEntity;
-import com.groundzero.giftexchange.user.repository.UserRepository;
+import com.groundzero.giftexchange.features.user.entity.UserEntity;
+import com.groundzero.giftexchange.features.user.repository.UserRepository;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

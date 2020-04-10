@@ -1,12 +1,12 @@
 package com.groundzero.giftexchange.jwt.controller;
 
-import com.groundzero.giftexchange.common.EmptyDataResponse;
-import com.groundzero.giftexchange.common.Response;
+import com.groundzero.giftexchange.data.EmptyDataResponse;
+import com.groundzero.giftexchange.data.Response;
 import com.groundzero.giftexchange.jwt.api.JwtRefresherTokenRequest;
 import com.groundzero.giftexchange.jwt.data.JwtAccessToken;
 import com.groundzero.giftexchange.jwt.api.JwtAccessTokenDataResponse;
 import com.groundzero.giftexchange.jwt.service.JwtUserDetailsService;
-import com.groundzero.giftexchange.jwt.utils.JwtUtils;
+import com.groundzero.giftexchange.utils.JwtUtils;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
