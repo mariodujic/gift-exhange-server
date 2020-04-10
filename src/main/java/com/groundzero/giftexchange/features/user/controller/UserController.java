@@ -2,8 +2,9 @@ package com.groundzero.giftexchange.features.user.controller;
 
 import com.groundzero.giftexchange.data.EmptyDataResponse;
 import com.groundzero.giftexchange.data.Response;
-import com.groundzero.giftexchange.jwt.data.JwtAccessToken;
-import com.groundzero.giftexchange.jwt.service.JwtUserDetailsService;
+import com.groundzero.giftexchange.features.jwt.data.JwtAccessToken;
+import com.groundzero.giftexchange.features.jwt.service.JwtUserDetailsService;
+import com.groundzero.giftexchange.utils.JwtType;
 import com.groundzero.giftexchange.utils.JwtUtils;
 import com.groundzero.giftexchange.features.user.api.LoginDataResponse;
 import com.groundzero.giftexchange.features.user.api.LoginRequest;
@@ -46,7 +47,7 @@ public class UserController {
     }
 
     UserDetails userDetails = jwtUserDetailsService.loadUserByUsername(request.getUsername());
-    String token = jwtUtils.generateToken(userDetails);
+    String token = jwtUtils.generateToken(userDetails, JwtType.ACCESS);
     Date expirationDate = jwtUtils.getExpirationDateFromToken(token);
     return new Response(200, "Successfully login", new LoginDataResponse(new JwtAccessToken(token, expirationDate)));
   }
@@ -96,7 +97,7 @@ public class UserController {
   private Response getNewUserResponse(UserEntity userEntity, UserEntity updatedUserEntity) {
     userRepository.save(updatedUserEntity);
     UserDetails userDetails = jwtUserDetailsService.loadUserByUsername(userEntity.getUsername());
-    String token = jwtUtils.generateToken(userDetails);
+    String token = jwtUtils.generateToken(userDetails, JwtType.ACCESS);
     Date expirationDate = jwtUtils.getExpirationDateFromToken(token);
 
     return new Response(

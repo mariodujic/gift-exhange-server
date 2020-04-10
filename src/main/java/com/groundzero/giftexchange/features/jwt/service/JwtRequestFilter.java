@@ -1,4 +1,4 @@
-package com.groundzero.giftexchange.jwt.service;
+package com.groundzero.giftexchange.features.jwt.service;
 
 import com.groundzero.giftexchange.utils.JwtUtils;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

@@ -1,11 +1,12 @@
-package com.groundzero.giftexchange.jwt.controller;
+package com.groundzero.giftexchange.features.jwt.controller;
 
 import com.groundzero.giftexchange.data.EmptyDataResponse;
 import com.groundzero.giftexchange.data.Response;
-import com.groundzero.giftexchange.jwt.api.JwtRefresherTokenRequest;
-import com.groundzero.giftexchange.jwt.data.JwtAccessToken;
-import com.groundzero.giftexchange.jwt.api.JwtAccessTokenDataResponse;
-import com.groundzero.giftexchange.jwt.service.JwtUserDetailsService;
+import com.groundzero.giftexchange.features.jwt.api.JwtRefresherTokenRequest;
+import com.groundzero.giftexchange.features.jwt.data.JwtAccessToken;
+import com.groundzero.giftexchange.features.jwt.api.JwtAccessTokenDataResponse;
+import com.groundzero.giftexchange.features.jwt.service.JwtUserDetailsService;
+import com.groundzero.giftexchange.utils.JwtType;
 import com.groundzero.giftexchange.utils.JwtUtils;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
@@ -39,7 +40,7 @@ class JwtController {
     String username = jwtUtils.getUsernameFromToken(request.getRefresherToken());
     Date expirationDate = jwtUtils.getExpirationDateFromToken(request.getRefresherToken());
     UserDetails userDetails = jwtUserDetailsService.loadUserByUsername(username);
-    String token = jwtUtils.generateToken(userDetails);
+    String token = jwtUtils.generateToken(userDetails, JwtType.ACCESS);
     return new Response(
         200,
         "Successfully fetched access token",

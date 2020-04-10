@@ -2,7 +2,7 @@ package com.groundzero.giftexchange.features.user.api;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.groundzero.giftexchange.data.ResponseData;
-import com.groundzero.giftexchange.jwt.data.JwtAccessToken;
+import com.groundzero.giftexchange.features.jwt.data.JwtAccessToken;
 
 public class LoginDataResponse implements ResponseData {
 

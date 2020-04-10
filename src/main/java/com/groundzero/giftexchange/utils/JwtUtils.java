@@ -15,9 +15,8 @@ import java.util.function.Function;
 public
 class JwtUtils implements Serializable {
 
-  private static final long serialVersionUID = -2550185165626007488L;
-
-  public static final long JWT_ACCESS_TOKEN_EXPIRATION = 60*5;
+  public static final long JWT_ACCESS_TOKEN_EXPIRATION_SEC = 60 * 5;
+  public static final long JWT_REFRESH_TOKEN_EXPIRATION_SEC = 60 * 60 * 24 * 365;
 
   @Value("${jwt.secret}")
   private String secret;
@@ -48,16 +47,20 @@ class JwtUtils implements Serializable {
   }
 
 
-  public String generateToken(UserDetails userDetails) {
+  public String generateToken(UserDetails userDetails, JwtType tokenType) {
     Map<String, Object> claims = new HashMap<>();
-    return doGenerateToken(claims, userDetails.getUsername());
+    return doGenerateToken(claims, userDetails.getUsername(), tokenType);
   }
 
 
-  private String doGenerateToken(Map<String, Object> claims, String subject) {
+  private String doGenerateToken(Map<String, Object> claims, String subject, JwtType tokenType) {
     return Jwts.builder().setClaims(claims).setSubject(subject).setIssuedAt(new Date(System.currentTimeMillis()))
-        .setExpiration(new Date(System.currentTimeMillis() + JWT_ACCESS_TOKEN_EXPIRATION * 1000))
+        .setExpiration(new Date(System.currentTimeMillis() + getExpirationSeconds(tokenType) * 1000))
         .signWith(SignatureAlgorithm.HS512, secret).compact();
+  }
+
+  private long getExpirationSeconds(JwtType tokenType) {
+    return tokenType == JwtType.ACCESS ? JWT_ACCESS_TOKEN_EXPIRATION_SEC : JWT_REFRESH_TOKEN_EXPIRATION_SEC;
   }
 
 

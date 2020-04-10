@@ -1,8 +1,8 @@
 package com.groundzero.giftexchange.security;
 
-import com.groundzero.giftexchange.jwt.service.JwtEntryPoint;
-import com.groundzero.giftexchange.jwt.service.JwtRequestFilter;
-import com.groundzero.giftexchange.jwt.service.JwtUserDetailsService;
+import com.groundzero.giftexchange.features.jwt.service.JwtEntryPoint;
+import com.groundzero.giftexchange.features.jwt.service.JwtRequestFilter;
+import com.groundzero.giftexchange.features.jwt.service.JwtUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

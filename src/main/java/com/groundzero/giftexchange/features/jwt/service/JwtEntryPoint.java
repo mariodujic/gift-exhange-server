@@ -1,4 +1,4 @@
-package com.groundzero.giftexchange.jwt.service;
+package com.groundzero.giftexchange.features.jwt.service;
 
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;

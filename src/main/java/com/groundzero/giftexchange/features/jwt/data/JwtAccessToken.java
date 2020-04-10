@@ -1,4 +1,4 @@
-package com.groundzero.giftexchange.jwt.data;
+package com.groundzero.giftexchange.features.jwt.data;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
