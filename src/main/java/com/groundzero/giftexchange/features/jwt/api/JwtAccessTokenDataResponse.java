@@ -2,22 +2,22 @@ package com.groundzero.giftexchange.features.jwt.api;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.groundzero.giftexchange.data.ResponseData;
-import com.groundzero.giftexchange.features.jwt.data.JwtAccessToken;
+import com.groundzero.giftexchange.features.jwt.data.JwtToken;
 
 public class JwtAccessTokenDataResponse implements ResponseData {
 
   @JsonProperty("access_token")
-  private JwtAccessToken accessToken;
+  private JwtToken accessToken;
 
-  public JwtAccessTokenDataResponse(JwtAccessToken accessToken) {
+  public JwtAccessTokenDataResponse(JwtToken accessToken) {
     this.accessToken = accessToken;
   }
 
-  public JwtAccessToken getAccessToken() {
+  public JwtToken getAccessToken() {
     return accessToken;
   }
 
-  public JwtAccessTokenDataResponse setAccessToken(JwtAccessToken accessToken) {
+  public JwtAccessTokenDataResponse setAccessToken(JwtToken accessToken) {
     this.accessToken = accessToken;
     return this;
   }

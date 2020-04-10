@@ -2,8 +2,8 @@ package com.groundzero.giftexchange.features.jwt.controller;
 
 import com.groundzero.giftexchange.data.EmptyDataResponse;
 import com.groundzero.giftexchange.data.Response;
-import com.groundzero.giftexchange.features.jwt.api.JwtRefresherTokenRequest;
-import com.groundzero.giftexchange.features.jwt.data.JwtAccessToken;
+import com.groundzero.giftexchange.features.jwt.api.JwtAccessTokenRequest;
+import com.groundzero.giftexchange.features.jwt.data.JwtToken;
 import com.groundzero.giftexchange.features.jwt.api.JwtAccessTokenDataResponse;
 import com.groundzero.giftexchange.features.jwt.service.JwtUserDetailsService;
 import com.groundzero.giftexchange.utils.JwtType;
@@ -27,9 +27,9 @@ class JwtController {
   }
 
   @RequestMapping(value = "/authenticate/access-token", method = RequestMethod.POST)
-  public Response createAuthenticationTokenWithToken(@RequestBody JwtRefresherTokenRequest request) {
+  public Response createAuthenticationTokenWithToken(@RequestBody JwtAccessTokenRequest request) {
 
-    Map<Boolean, String> validRefresherToken = jwtUtils.validateToken(request.getRefresherToken());
+    Map<Boolean, String> validRefresherToken = jwtUtils.validateToken(request.getRefreshToken());
 
     for (Map.Entry<Boolean, String> entry : validRefresherToken.entrySet()) {
       boolean isTokenValid = !entry.getKey();
@@ -37,15 +37,15 @@ class JwtController {
         return new Response(500, entry.getValue(), new EmptyDataResponse());
       }
     }
-    String username = jwtUtils.getUsernameFromToken(request.getRefresherToken());
-    Date expirationDate = jwtUtils.getExpirationDateFromToken(request.getRefresherToken());
+    String username = jwtUtils.getUsernameFromToken(request.getRefreshToken());
+    Date expirationDate = jwtUtils.getExpirationDateFromToken(request.getRefreshToken());
     UserDetails userDetails = jwtUserDetailsService.loadUserByUsername(username);
     String token = jwtUtils.generateToken(userDetails, JwtType.ACCESS);
     return new Response(
         200,
         "Successfully fetched access token",
         new JwtAccessTokenDataResponse(
-            new JwtAccessToken(token, expirationDate)
+            new JwtToken(token, expirationDate)
         )
     );
   }

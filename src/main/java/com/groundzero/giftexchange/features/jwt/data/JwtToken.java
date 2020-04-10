@@ -4,13 +4,13 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Date;
 
-public class JwtAccessToken {
+public class JwtToken {
 
   private String token;
   @JsonProperty("expiration_date")
   private Date expirationDate;
 
-  public JwtAccessToken(String token, Date expirationDate) {
+  public JwtToken(String token, Date expirationDate) {
     this.token = token;
     this.expirationDate = expirationDate;
   }
@@ -19,7 +19,7 @@ public class JwtAccessToken {
     return token;
   }
 
-  public JwtAccessToken setToken(String token) {
+  public JwtToken setToken(String token) {
     this.token = token;
     return this;
   }
@@ -28,7 +28,7 @@ public class JwtAccessToken {
     return expirationDate;
   }
 
-  public JwtAccessToken setExpirationDate(Date expirationDate) {
+  public JwtToken setExpirationDate(Date expirationDate) {
     this.expirationDate = expirationDate;
     return this;
   }

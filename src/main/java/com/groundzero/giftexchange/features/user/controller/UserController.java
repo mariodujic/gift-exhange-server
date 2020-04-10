@@ -2,10 +2,8 @@ package com.groundzero.giftexchange.features.user.controller;
 
 import com.groundzero.giftexchange.data.EmptyDataResponse;
 import com.groundzero.giftexchange.data.Response;
-import com.groundzero.giftexchange.features.jwt.data.JwtAccessToken;
+import com.groundzero.giftexchange.features.jwt.data.JwtToken;
 import com.groundzero.giftexchange.features.jwt.service.JwtUserDetailsService;
-import com.groundzero.giftexchange.utils.JwtType;
-import com.groundzero.giftexchange.utils.JwtUtils;
 import com.groundzero.giftexchange.features.user.api.LoginDataResponse;
 import com.groundzero.giftexchange.features.user.api.LoginRequest;
 import com.groundzero.giftexchange.features.user.api.RegistrationDataResponse;
@@ -15,6 +13,8 @@ import com.groundzero.giftexchange.features.user.data.UserDao;
 import com.groundzero.giftexchange.features.user.entity.UserEntity;
 import com.groundzero.giftexchange.features.user.entity.UserEntityDto;
 import com.groundzero.giftexchange.features.user.repository.UserRepository;
+import com.groundzero.giftexchange.utils.JwtType;
+import com.groundzero.giftexchange.utils.JwtUtils;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -45,11 +45,14 @@ public class UserController {
     } catch (Exception e) {
       return new Response(500, "Wrong username or password", new EmptyDataResponse());
     }
-
-    UserDetails userDetails = jwtUserDetailsService.loadUserByUsername(request.getUsername());
-    String token = jwtUtils.generateToken(userDetails, JwtType.ACCESS);
-    Date expirationDate = jwtUtils.getExpirationDateFromToken(token);
-    return new Response(200, "Successfully login", new LoginDataResponse(new JwtAccessToken(token, expirationDate)));
+    return new Response(
+        200,
+        "Successfully login",
+        new LoginDataResponse(
+            getToken(request.getUsername(), JwtType.ACCESS),
+            getToken(request.getUsername(), JwtType.REFRESH)
+        )
+    );
   }
 
   @PostMapping("/register")
@@ -68,7 +71,6 @@ public class UserController {
   ) {
 
     UserEntity userEntity = getUserEntityFromToken(bearerAuthorization);
-
     if (userEntity == null) {
       return new Response(500, "User not found", new EmptyDataResponse());
     }
@@ -83,7 +85,6 @@ public class UserController {
   ) {
 
     UserEntity userEntity = getUserEntityFromToken(bearerAuthorization);
-
     if (userEntity.getUsername() == null) {
       return new Response(500, "User not found", new EmptyDataResponse());
     } else if (userRepository.existsByUsername(request.getUsername())) {
@@ -96,17 +97,21 @@ public class UserController {
 
   private Response getNewUserResponse(UserEntity userEntity, UserEntity updatedUserEntity) {
     userRepository.save(updatedUserEntity);
-    UserDetails userDetails = jwtUserDetailsService.loadUserByUsername(userEntity.getUsername());
-    String token = jwtUtils.generateToken(userDetails, JwtType.ACCESS);
-    Date expirationDate = jwtUtils.getExpirationDateFromToken(token);
-
     return new Response(
         200,
         "Request was successful",
         new RegistrationDataResponse(
-            new JwtAccessToken(token, expirationDate),
+            getToken(userEntity.getUsername(), JwtType.ACCESS),
+            getToken(userEntity.getUsername(), JwtType.REFRESH),
             UserDao.fromEntity(userEntity))
     );
+  }
+
+  private JwtToken getToken(String username, JwtType tokenType) {
+    UserDetails userDetails = jwtUserDetailsService.loadUserByUsername(username);
+    String token = jwtUtils.generateToken(userDetails, tokenType);
+    Date expirationDate = jwtUtils.getExpirationDateFromToken(token);
+    return new JwtToken(token, expirationDate);
   }
 
   private UserEntity getUserEntityFromToken(String bearerAuthorization) {
