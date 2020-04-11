@@ -10,6 +10,7 @@ import com.groundzero.giftexchange.features.trait.entity.TraitEntity;
 import com.groundzero.giftexchange.features.trait.repository.TraitRepository;
 import com.groundzero.giftexchange.features.user.entity.UserEntity;
 import com.groundzero.giftexchange.features.user.repository.UserRepository;
+import com.groundzero.giftexchange.utils.JwtType;
 import com.groundzero.giftexchange.utils.JwtUtils;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
@@ -35,6 +36,9 @@ public class TraitController {
       @RequestHeader(value = "Authorization") String bearerAuthorization,
       @RequestBody TraitRequest traitRequest
   ) {
+    if (jwtUtils.getTokenType(jwtUtils.getTokenFromBearer(bearerAuthorization)) != JwtType.ACCESS) {
+      return new Response(500, "Access token required", new EmptyDataResponse());
+    }
     UserEntity userEntity = getUserEntityFromToken(bearerAuthorization);
     int traitId = userEntity.getTrait().getId();
     TraitEntity traitEntity = TraitDto.fromRequest(traitRequest);

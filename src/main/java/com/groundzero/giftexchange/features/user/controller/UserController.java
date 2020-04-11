@@ -70,6 +70,10 @@ public class UserController {
       @RequestHeader(value = "Authorization") String bearerAuthorization
   ) {
 
+    if (jwtUtils.getTokenType(jwtUtils.getTokenFromBearer(bearerAuthorization)) != JwtType.ACCESS) {
+      return new Response(500, "Access token required", new EmptyDataResponse());
+    }
+
     UserEntity userEntity = getUserEntityFromToken(bearerAuthorization);
     if (userEntity == null) {
       return new Response(500, "User not found", new EmptyDataResponse());
@@ -83,6 +87,10 @@ public class UserController {
       @RequestHeader(value = "Authorization") String bearerAuthorization,
       @RequestBody RegistrationRequest request
   ) {
+
+    if (jwtUtils.getTokenType(jwtUtils.getTokenFromBearer(bearerAuthorization)) != JwtType.ACCESS) {
+      return new Response(500, "Access token required", new EmptyDataResponse());
+    }
 
     UserEntity userEntity = getUserEntityFromToken(bearerAuthorization);
     if (userEntity.getUsername() == null) {
@@ -116,7 +124,7 @@ public class UserController {
   }
 
   private UserEntity getUserEntityFromToken(String bearerAuthorization) {
-    String username = jwtUtils.getUsernameFromToken(bearerAuthorization.substring(7));
+    String username = jwtUtils.getUsernameFromToken(jwtUtils.getTokenFromBearer(bearerAuthorization));
     return userRepository.findByUsername(username);
   }
 

@@ -75,6 +75,10 @@ class JwtUtils implements Serializable {
     return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
   }
 
+  public String getTokenFromBearer(String bearer) {
+    return bearer.substring(7);
+  }
+
   public Map<Boolean, String> validateToken(String token) {
     Map<Boolean, String> validationResponse = new HashMap<>();
     try {
