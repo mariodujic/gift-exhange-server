@@ -9,7 +9,7 @@ import com.groundzero.giftexchange.features.user.api.LoginRequest;
 import com.groundzero.giftexchange.features.user.api.RegistrationDataResponse;
 import com.groundzero.giftexchange.features.user.api.RegistrationRequest;
 import com.groundzero.giftexchange.features.user.data.RegistrationDto;
-import com.groundzero.giftexchange.features.user.data.UserDao;
+import com.groundzero.giftexchange.features.user.data.UserDto;
 import com.groundzero.giftexchange.features.user.entity.UserEntity;
 import com.groundzero.giftexchange.features.user.entity.UserEntityDto;
 import com.groundzero.giftexchange.features.user.repository.UserRepository;
@@ -111,7 +111,7 @@ public class UserController {
         new RegistrationDataResponse(
             getToken(userEntity.getUsername(), JwtType.ACCESS),
             getToken(userEntity.getUsername(), JwtType.REFRESH),
-            UserDao.fromEntity(userEntity))
+            UserDto.fromEntity(userEntity))
     );
   }
 

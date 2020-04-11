@@ -2,7 +2,7 @@ package com.groundzero.giftexchange.features.user.data;
 
 import com.groundzero.giftexchange.features.user.entity.UserEntity;
 
-public class UserDao {
+public class UserDto {
 
   public static User fromEntity(UserEntity entity) {
     return new User(
