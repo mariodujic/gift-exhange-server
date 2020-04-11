@@ -110,6 +110,7 @@ public class UserController {
   private JwtToken getToken(String username, JwtType tokenType) {
     UserDetails userDetails = jwtUserDetailsService.loadUserByUsername(username);
     String token = jwtUtils.generateToken(userDetails, tokenType);
+    System.out.println(jwtUtils.getTokenType(token));
     Date expirationDate = jwtUtils.getExpirationDateFromToken(token);
     return new JwtToken(token, expirationDate);
   }

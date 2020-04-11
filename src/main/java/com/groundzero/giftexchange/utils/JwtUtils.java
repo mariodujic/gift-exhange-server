@@ -18,6 +18,8 @@ class JwtUtils implements Serializable {
   public static final long JWT_ACCESS_TOKEN_EXPIRATION_SEC = 60 * 5;
   public static final long JWT_REFRESH_TOKEN_EXPIRATION_SEC = 60 * 60 * 24 * 365;
 
+  private static final String CUSTOM_CLAIM_TYPE_KEY = "key_type";
+
   @Value("${jwt.secret}")
   private String secret;
 
@@ -30,11 +32,14 @@ class JwtUtils implements Serializable {
     return getClaimFromToken(token, Claims::getExpiration);
   }
 
+  public JwtType getTokenType(String token) {
+    return JwtType.findByValue((Integer) getAllClaimsFromToken(token).get(CUSTOM_CLAIM_TYPE_KEY));
+  }
+
   public <T> T getClaimFromToken(String token, Function<Claims, T> claimsResolver) {
     final Claims claims = getAllClaimsFromToken(token);
     return claimsResolver.apply(claims);
   }
-
 
   private Claims getAllClaimsFromToken(String token) {
     return Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody();
@@ -56,6 +61,7 @@ class JwtUtils implements Serializable {
   private String doGenerateToken(Map<String, Object> claims, String subject, JwtType tokenType) {
     return Jwts.builder().setClaims(claims).setSubject(subject).setIssuedAt(new Date(System.currentTimeMillis()))
         .setExpiration(new Date(System.currentTimeMillis() + getExpirationSeconds(tokenType) * 1000))
+        .claim(CUSTOM_CLAIM_TYPE_KEY, tokenType.value)
         .signWith(SignatureAlgorithm.HS512, secret).compact();
   }
 
