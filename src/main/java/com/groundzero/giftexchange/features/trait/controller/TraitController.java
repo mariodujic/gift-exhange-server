@@ -1,5 +1,6 @@
 package com.groundzero.giftexchange.features.trait.controller;
 
+import com.groundzero.giftexchange.data.EmptyDataResponse;
 import com.groundzero.giftexchange.data.Response;
 import com.groundzero.giftexchange.features.jwt.service.JwtUserDetailsService;
 import com.groundzero.giftexchange.features.trait.api.TraitRequest;
@@ -10,6 +11,7 @@ import com.groundzero.giftexchange.features.trait.repository.TraitRepository;
 import com.groundzero.giftexchange.features.user.entity.UserEntity;
 import com.groundzero.giftexchange.features.user.repository.UserRepository;
 import com.groundzero.giftexchange.utils.JwtUtils;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -45,7 +47,12 @@ public class TraitController {
   public Response getTrait(
       @PathVariable("id") int userId
   ) {
-    UserEntity userEntity = userDetailsService.loadById(userId);
+    UserEntity userEntity;
+    try {
+      userEntity = userDetailsService.loadById(userId);
+    } catch (UsernameNotFoundException e) {
+      return new Response(500, "User not found", new EmptyDataResponse());
+    }
     TraitEntity traitEntity = traitRepository.getOne(userEntity.getId());
     return new Response(200, "Trait successfully fetched for user with id: " + userId, new TraitResponseData(traitEntity));
   }
