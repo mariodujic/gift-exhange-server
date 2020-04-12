@@ -2,7 +2,7 @@ package com.groundzero.giftexchange.features.trait.controller;
 
 import com.groundzero.giftexchange.data.EmptyDataResponse;
 import com.groundzero.giftexchange.data.Response;
-import com.groundzero.giftexchange.features.interconnect.base.BaseController;
+import com.groundzero.giftexchange.base.BaseController;
 import com.groundzero.giftexchange.features.jwt.service.JwtUserDetailsService;
 import com.groundzero.giftexchange.features.trait.api.TraitRequest;
 import com.groundzero.giftexchange.features.trait.api.TraitResponseData;

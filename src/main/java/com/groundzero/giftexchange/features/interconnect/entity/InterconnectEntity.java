@@ -11,7 +11,6 @@ public class InterconnectEntity {
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
   private int id;
-  @JsonProperty("is_looking_to_connect")
   private boolean isLookingToConnect;
 
   public InterconnectEntity() {

@@ -2,7 +2,7 @@ package com.groundzero.giftexchange.features.user.controller;
 
 import com.groundzero.giftexchange.data.EmptyDataResponse;
 import com.groundzero.giftexchange.data.Response;
-import com.groundzero.giftexchange.features.interconnect.base.BaseController;
+import com.groundzero.giftexchange.base.BaseController;
 import com.groundzero.giftexchange.features.jwt.data.JwtToken;
 import com.groundzero.giftexchange.features.jwt.service.JwtUserDetailsService;
 import com.groundzero.giftexchange.features.user.api.LoginDataResponse;

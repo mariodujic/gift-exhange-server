@@ -1,10 +1,10 @@
 package com.groundzero.giftexchange.features.interconnect.controller;
 
+import com.groundzero.giftexchange.base.BaseController;
 import com.groundzero.giftexchange.data.EmptyDataResponse;
 import com.groundzero.giftexchange.data.Response;
 import com.groundzero.giftexchange.features.interconnect.api.InterconnectRequest;
 import com.groundzero.giftexchange.features.interconnect.api.InterconnectResponseData;
-import com.groundzero.giftexchange.features.interconnect.base.BaseController;
 import com.groundzero.giftexchange.features.interconnect.data.InterconnectDto;
 import com.groundzero.giftexchange.features.interconnect.entity.InterconnectEntity;
 import com.groundzero.giftexchange.features.interconnect.repository.InterconnectRepository;
@@ -48,7 +48,11 @@ public class InterconnectController extends BaseController {
     InterconnectEntity interconnectEntity = interconnectRepository.getOne(userEntity.getInterconnect().getId());
     userEntity.setInterconnect(InterconnectDto.fromRequest(interconnectEntity, request));
     userRepository.save(userEntity);
-    return new Response(200, "Interconnection successfully updated", new InterconnectResponseData(userEntity.getInterconnect()));
+    return new Response(
+        200,
+        "Interconnection successfully updated",
+        new InterconnectResponseData(InterconnectDto.toResponse(userEntity.getInterconnect()))
+    );
   }
 
   private List<String> traitEligibilityVerification(UserEntity userEntity) {

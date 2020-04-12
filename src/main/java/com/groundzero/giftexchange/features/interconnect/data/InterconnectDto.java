@@ -9,4 +9,8 @@ public class InterconnectDto {
     entity.setLookingToConnect(true);
     return entity;
   }
+
+  public static Interconnect toResponse(InterconnectEntity entity) {
+    return new Interconnect(entity.isLookingToConnect());
+  }
 }

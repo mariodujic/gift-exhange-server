@@ -3,6 +3,7 @@ package com.groundzero.giftexchange.features.user.data;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class User {
+
   private long id;
   @JsonProperty("first_name")
   private String firstName;

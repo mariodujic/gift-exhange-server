@@ -1,4 +1,4 @@
-package com.groundzero.giftexchange.features.interconnect.base;
+package com.groundzero.giftexchange.base;
 
 import com.groundzero.giftexchange.features.user.repository.UserRepository;
 import com.groundzero.giftexchange.utils.JwtUtils;
