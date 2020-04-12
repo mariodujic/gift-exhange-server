@@ -1,5 +1,6 @@
 package com.groundzero.giftexchange.features.user.data;
 
+import com.groundzero.giftexchange.features.interconnect.entity.InterconnectEntity;
 import com.groundzero.giftexchange.features.trait.entity.TraitEntity;
 import com.groundzero.giftexchange.features.user.api.RegistrationRequest;
 import com.groundzero.giftexchange.features.user.entity.UserEntity;
@@ -14,6 +15,7 @@ public class RegistrationDto {
     userEntity.setUsername(request.getUsername());
     userEntity.setPassword(new BCryptPasswordEncoder().encode(request.getPassword()));
     userEntity.setTrait(new TraitEntity());
+    userEntity.setInterconnect(new InterconnectEntity());
     return userEntity;
   }
 }

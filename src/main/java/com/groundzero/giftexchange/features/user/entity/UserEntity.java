@@ -1,5 +1,6 @@
 package com.groundzero.giftexchange.features.user.entity;
 
+import com.groundzero.giftexchange.features.interconnect.entity.InterconnectEntity;
 import com.groundzero.giftexchange.features.trait.entity.TraitEntity;
 
 import javax.persistence.*;
@@ -19,6 +20,9 @@ public class UserEntity {
   @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
   @JoinColumn(name = "trait_id")
   private TraitEntity trait;
+  @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+  @JoinColumn(name = "interconnect_id")
+  private InterconnectEntity interconnect;
 
   public UserEntity() {
   }
@@ -69,6 +73,15 @@ public class UserEntity {
 
   public UserEntity setPassword(String password) {
     this.password = password;
+    return this;
+  }
+
+  public InterconnectEntity getInterconnect() {
+    return interconnect;
+  }
+
+  public UserEntity setInterconnect(InterconnectEntity interconnect) {
+    this.interconnect = interconnect;
     return this;
   }
 }
