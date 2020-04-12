@@ -20,6 +20,7 @@ public class UserEntity {
   @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
   @JoinColumn(name = "trait_id")
   private TraitEntity trait;
+
   @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
   @JoinColumn(name = "interconnect_id")
   private InterconnectEntity interconnect;

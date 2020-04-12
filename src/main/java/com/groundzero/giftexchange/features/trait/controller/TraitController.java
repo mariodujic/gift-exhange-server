@@ -2,6 +2,7 @@ package com.groundzero.giftexchange.features.trait.controller;
 
 import com.groundzero.giftexchange.data.EmptyDataResponse;
 import com.groundzero.giftexchange.data.Response;
+import com.groundzero.giftexchange.features.interconnect.base.BaseController;
 import com.groundzero.giftexchange.features.jwt.service.JwtUserDetailsService;
 import com.groundzero.giftexchange.features.trait.api.TraitRequest;
 import com.groundzero.giftexchange.features.trait.api.TraitResponseData;
@@ -17,17 +18,14 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/trait")
-public class TraitController {
+public class TraitController extends BaseController {
 
-  private final JwtUtils jwtUtils;
   private final TraitRepository traitRepository;
-  private final UserRepository userRepository;
   private final JwtUserDetailsService userDetailsService;
 
   public TraitController(JwtUtils jwtUtils, TraitRepository traitRepository, UserRepository userRepository, JwtUserDetailsService userDetailsService) {
-    this.jwtUtils = jwtUtils;
+    super(jwtUtils, userRepository);
     this.traitRepository = traitRepository;
-    this.userRepository = userRepository;
     this.userDetailsService = userDetailsService;
   }
 

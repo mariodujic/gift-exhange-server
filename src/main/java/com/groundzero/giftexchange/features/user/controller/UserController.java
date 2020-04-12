@@ -2,6 +2,7 @@ package com.groundzero.giftexchange.features.user.controller;
 
 import com.groundzero.giftexchange.data.EmptyDataResponse;
 import com.groundzero.giftexchange.data.Response;
+import com.groundzero.giftexchange.features.interconnect.base.BaseController;
 import com.groundzero.giftexchange.features.jwt.data.JwtToken;
 import com.groundzero.giftexchange.features.jwt.service.JwtUserDetailsService;
 import com.groundzero.giftexchange.features.user.api.LoginDataResponse;
@@ -24,17 +25,14 @@ import java.util.Date;
 
 @RestController
 @RequestMapping("/user")
-public class UserController {
+public class UserController extends BaseController {
 
-  private final UserRepository userRepository;
   private final JwtUserDetailsService jwtUserDetailsService;
-  private final JwtUtils jwtUtils;
   private final AuthenticationManager authenticationManager;
 
   public UserController(UserRepository userRepository, JwtUserDetailsService jwtUserDetailsService, JwtUtils jwtUtils, AuthenticationManager authenticationManager) {
-    this.userRepository = userRepository;
+    super(jwtUtils, userRepository);
     this.jwtUserDetailsService = jwtUserDetailsService;
-    this.jwtUtils = jwtUtils;
     this.authenticationManager = authenticationManager;
   }
 

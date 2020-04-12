@@ -1,14 +1,15 @@
 package com.groundzero.giftexchange.features.interconnect.base;
 
+import com.groundzero.giftexchange.features.user.repository.UserRepository;
 import com.groundzero.giftexchange.utils.JwtUtils;
-import org.springframework.web.bind.annotation.RestController;
 
-@RestController
 public abstract class BaseController {
 
   protected final JwtUtils jwtUtils;
+  protected final UserRepository userRepository;
 
-  protected BaseController(JwtUtils jwtUtils) {
+  protected BaseController(JwtUtils jwtUtils, UserRepository userRepository) {
     this.jwtUtils = jwtUtils;
+    this.userRepository = userRepository;
   }
 }

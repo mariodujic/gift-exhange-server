@@ -1,5 +1,7 @@
 package com.groundzero.giftexchange.features.interconnect.entity;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import javax.persistence.*;
 
 @Entity
@@ -9,10 +11,8 @@ public class InterconnectEntity {
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
   private int id;
-  private boolean isEligible;
-  /*private int totalCount;
-  private int successCount;
-  private int failureCount;*/
+  @JsonProperty("is_looking_to_connect")
+  private boolean isLookingToConnect;
 
   public InterconnectEntity() {
   }
@@ -26,12 +26,12 @@ public class InterconnectEntity {
     return this;
   }
 
-  public boolean isEligible() {
-    return isEligible;
+  public boolean isLookingToConnect() {
+    return isLookingToConnect;
   }
 
-  public InterconnectEntity setEligible(boolean eligible) {
-    isEligible = eligible;
+  public InterconnectEntity setLookingToConnect(boolean lookingToConnect) {
+    isLookingToConnect = lookingToConnect;
     return this;
   }
 }

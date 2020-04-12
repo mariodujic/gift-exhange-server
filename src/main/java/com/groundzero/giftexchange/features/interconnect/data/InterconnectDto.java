@@ -6,7 +6,7 @@ import com.groundzero.giftexchange.features.interconnect.entity.InterconnectEnti
 public class InterconnectDto {
 
   public static InterconnectEntity fromRequest(InterconnectEntity entity, InterconnectRequest request) {
-    entity.setEligible(true);
+    entity.setLookingToConnect(true);
     return entity;
   }
 }
