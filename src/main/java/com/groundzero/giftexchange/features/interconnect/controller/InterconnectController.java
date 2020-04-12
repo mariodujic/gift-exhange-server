@@ -31,7 +31,7 @@ public class InterconnectController extends BaseController {
     this.interconnectRepository = interconnectRepository;
   }
 
-  @PostMapping("/update")
+  @PostMapping("/change")
   public Response updateInterconnectStatus(
       @RequestHeader("Authorization") String bearerAuthorization,
       @RequestBody InterconnectRequest request
@@ -40,17 +40,19 @@ public class InterconnectController extends BaseController {
       return new Response(500, "Access token required", new EmptyDataResponse());
     }
     UserEntity userEntity = userRepository.getOne(request.getUserId());
+    InterconnectEntity interconnectEntity = interconnectRepository.getOne(userEntity.getInterconnect().getId());
 
-    for (String i : traitEligibilityVerification(userEntity)) {
-      return new Response(500, "Not eligible. " + i, new EmptyDataResponse());
+    if(!interconnectEntity.isLookingToConnect()) {
+      for (String i : traitEligibilityVerification(userEntity)) {
+        return new Response(500, "Not eligible. " + i, new EmptyDataResponse());
+      }
     }
 
-    InterconnectEntity interconnectEntity = interconnectRepository.getOne(userEntity.getInterconnect().getId());
     userEntity.setInterconnect(InterconnectDto.fromRequest(interconnectEntity, request));
     userRepository.save(userEntity);
     return new Response(
         200,
-        "Interconnection successfully updated",
+        "Interconnection successfully changed",
         new InterconnectResponseData(InterconnectDto.toResponse(userEntity.getInterconnect()))
     );
   }

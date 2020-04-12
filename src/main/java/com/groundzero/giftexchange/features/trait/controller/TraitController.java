@@ -55,7 +55,7 @@ public class TraitController extends BaseController {
     } catch (UsernameNotFoundException e) {
       return new Response(500, "User not found", new EmptyDataResponse());
     }
-    TraitEntity traitEntity = traitRepository.getOne(userEntity.getId());
+    TraitEntity traitEntity = traitRepository.getOne(userEntity.getTrait().getId());
     return new Response(200, "Trait successfully fetched for user with id: " + userId, new TraitResponseData(traitEntity));
   }
 
