@@ -1,8 +1,8 @@
 package com.groundzero.giftexchange.features.trait.controller;
 
+import com.groundzero.giftexchange.base.BaseController;
 import com.groundzero.giftexchange.data.EmptyDataResponse;
 import com.groundzero.giftexchange.data.Response;
-import com.groundzero.giftexchange.base.BaseController;
 import com.groundzero.giftexchange.features.jwt.service.JwtUserDetailsService;
 import com.groundzero.giftexchange.features.trait.api.TraitRequest;
 import com.groundzero.giftexchange.features.trait.api.TraitResponseData;
@@ -29,7 +29,7 @@ public class TraitController extends BaseController {
     this.userDetailsService = userDetailsService;
   }
 
-  @PostMapping("/add")
+  @PostMapping("/update")
   public Response addTrait(
       @RequestHeader(value = "Authorization") String bearerAuthorization,
       @RequestBody TraitRequest traitRequest
@@ -39,10 +39,10 @@ public class TraitController extends BaseController {
     }
     UserEntity userEntity = getUserEntityFromToken(bearerAuthorization);
     int traitId = userEntity.getTrait().getId();
-    TraitEntity traitEntity = TraitDto.fromRequest(traitRequest);
+    TraitEntity traitEntity = traitRepository.getOne(traitId);
     traitEntity.setId(traitId);
-    traitRepository.save(traitEntity);
-    return new Response(200, "Trait added", new TraitResponseData(traitEntity));
+    traitRepository.save(TraitDto.fromRequest(traitEntity, traitRequest));
+    return new Response(200, "Trait updated successfully", new TraitResponseData(traitEntity));
   }
 
   @GetMapping("/get/{id}")
