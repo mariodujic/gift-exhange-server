@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
 
+@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping("/user")
 public class UserController extends BaseController {
@@ -55,6 +56,7 @@ public class UserController extends BaseController {
 
   @PostMapping("/register")
   public Response createUser(@RequestBody RegistrationRequest request) {
+    System.out.println(request);
 
     if (userRepository.existsByUsername(request.getUsername())) {
       return new Response(500, "User already exists", new EmptyDataResponse());
