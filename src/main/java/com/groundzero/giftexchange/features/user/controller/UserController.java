@@ -56,7 +56,6 @@ public class UserController extends BaseController {
 
   @PostMapping("/register")
   public Response createUser(@RequestBody RegistrationRequest request) {
-    System.out.println(request);
 
     if (userRepository.existsByUsername(request.getUsername())) {
       return new Response(500, "User already exists", new EmptyDataResponse());
