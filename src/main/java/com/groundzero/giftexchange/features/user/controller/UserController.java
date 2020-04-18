@@ -5,7 +5,6 @@ import com.groundzero.giftexchange.data.Response;
 import com.groundzero.giftexchange.base.BaseController;
 import com.groundzero.giftexchange.features.jwt.data.JwtToken;
 import com.groundzero.giftexchange.features.jwt.service.JwtUserDetailsService;
-import com.groundzero.giftexchange.features.user.api.LoginDataResponse;
 import com.groundzero.giftexchange.features.user.api.LoginRequest;
 import com.groundzero.giftexchange.features.user.api.RegistrationDataResponse;
 import com.groundzero.giftexchange.features.user.api.RegistrationRequest;
@@ -44,14 +43,8 @@ public class UserController extends BaseController {
     } catch (Exception e) {
       return new Response(500, "Wrong username or password", new EmptyDataResponse());
     }
-    return new Response(
-        200,
-        "Successfully login",
-        new LoginDataResponse(
-            getToken(request.getUsername(), JwtType.ACCESS),
-            getToken(request.getUsername(), JwtType.REFRESH)
-        )
-    );
+    UserEntity userEntity = userRepository.findByUsername(request.getUsername());
+   return getUserResponse(userEntity, null);
   }
 
   @PostMapping("/register")
@@ -61,7 +54,7 @@ public class UserController extends BaseController {
       return new Response(500, "User already exists", new EmptyDataResponse());
     }
     UserEntity userEntity = RegistrationDto.toEntity(request);
-    return getNewUserResponse(userEntity, userEntity);
+    return getUserResponse(userEntity, userEntity);
   }
 
   @DeleteMapping("/delete")
@@ -99,11 +92,13 @@ public class UserController extends BaseController {
     }
 
     UserEntity updatedUserEntity = UserEntityDto.fromRegistrationRequest(userEntity, request);
-    return getNewUserResponse(userEntity, updatedUserEntity);
+    return getUserResponse(userEntity, updatedUserEntity);
   }
 
-  private Response getNewUserResponse(UserEntity userEntity, UserEntity updatedUserEntity) {
-    userRepository.save(updatedUserEntity);
+  private Response getUserResponse(UserEntity userEntity, UserEntity updatedUserEntity) {
+    if(updatedUserEntity != null) {
+      userRepository.save(updatedUserEntity);
+    }
     return new Response(
         200,
         "Request was successful",
