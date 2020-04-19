@@ -6,6 +6,7 @@ import com.groundzero.giftexchange.data.Response;
 import com.groundzero.giftexchange.features.jwt.service.JwtUserDetailsService;
 import com.groundzero.giftexchange.features.trait.api.TraitRequest;
 import com.groundzero.giftexchange.features.trait.api.TraitResponseData;
+import com.groundzero.giftexchange.features.trait.api.TraitSurveyResponseData;
 import com.groundzero.giftexchange.features.trait.data.TraitDto;
 import com.groundzero.giftexchange.features.trait.entity.TraitEntity;
 import com.groundzero.giftexchange.features.trait.repository.TraitRepository;
@@ -16,6 +17,7 @@ import com.groundzero.giftexchange.utils.JwtUtils;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
+@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping("/trait")
 public class TraitController extends BaseController {
@@ -62,5 +64,10 @@ public class TraitController extends BaseController {
   private UserEntity getUserEntityFromToken(String bearerAuthorization) {
     String username = jwtUtils.getUsernameFromToken(bearerAuthorization.substring(7));
     return userRepository.findByUsername(username);
+  }
+
+  @GetMapping("/survey")
+  public Response getTraitsSurvey() {
+    return new Response(200, "Survey successfully fetched", new TraitSurveyResponseData());
   }
 }
