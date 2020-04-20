@@ -15,7 +15,7 @@ import java.util.function.Function;
 public
 class JwtUtils implements Serializable {
 
-  public static final long JWT_ACCESS_TOKEN_EXPIRATION_SEC = 60 * 5;
+  public static final long JWT_ACCESS_TOKEN_EXPIRATION_SEC = 60 * 60;
   public static final long JWT_REFRESH_TOKEN_EXPIRATION_SEC = 60 * 60 * 24 * 365;
 
   private static final String CUSTOM_CLAIM_TYPE_KEY = "key_type";
