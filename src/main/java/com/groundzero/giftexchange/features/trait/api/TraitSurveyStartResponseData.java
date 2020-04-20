@@ -7,11 +7,11 @@ import com.groundzero.giftexchange.features.trait.data.TraitQuestion;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TraitSurveyResponseData implements ResponseData {
+public class TraitSurveyStartResponseData implements ResponseData {
   @JsonProperty("survey_questions")
   private List<TraitQuestion> surveyQuestions;
 
-  public TraitSurveyResponseData() {
+  public TraitSurveyStartResponseData() {
     createSurvey();
   }
 
@@ -46,8 +46,8 @@ public class TraitSurveyResponseData implements ResponseData {
 
     surveyQuestions = new ArrayList<>();
     surveyQuestions.add(new TraitQuestion(0, "Question 1", "Can you answer 1 question?", answerOne));
-    surveyQuestions.add(new TraitQuestion(0, "Question 2", "Can you answer 2 question?", answerTwo));
-    surveyQuestions.add(new TraitQuestion(0, "Question 3", "Can you answer 3 question?", answerThree));
-    surveyQuestions.add(new TraitQuestion(0, "Question 4", "Can you answer 4 question?", answerFour));
+//    surveyQuestions.add(new TraitQuestion(0, "Question 2", "Can you answer 2 question?", answerTwo));
+//    surveyQuestions.add(new TraitQuestion(0, "Question 3", "Can you answer 3 question?", answerThree));
+//    surveyQuestions.add(new TraitQuestion(0, "Question 4", "Can you answer 4 question?", answerFour));
   }
 }

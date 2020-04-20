@@ -4,9 +4,9 @@ import com.groundzero.giftexchange.base.BaseController;
 import com.groundzero.giftexchange.data.EmptyDataResponse;
 import com.groundzero.giftexchange.data.Response;
 import com.groundzero.giftexchange.features.jwt.service.JwtUserDetailsService;
-import com.groundzero.giftexchange.features.trait.api.TraitRequest;
 import com.groundzero.giftexchange.features.trait.api.TraitResponseData;
-import com.groundzero.giftexchange.features.trait.api.TraitSurveyResponseData;
+import com.groundzero.giftexchange.features.trait.api.TraitSurveyStartResponseData;
+import com.groundzero.giftexchange.features.trait.api.TraitsSurveyCompletedRequest;
 import com.groundzero.giftexchange.features.trait.data.TraitDto;
 import com.groundzero.giftexchange.features.trait.entity.TraitEntity;
 import com.groundzero.giftexchange.features.trait.repository.TraitRepository;
@@ -34,7 +34,7 @@ public class TraitController extends BaseController {
   @PostMapping("/update")
   public Response addTrait(
       @RequestHeader(value = "Authorization") String bearerAuthorization,
-      @RequestBody TraitRequest traitRequest
+      @RequestBody TraitsSurveyCompletedRequest traitRequest
   ) {
     if (jwtUtils.getTokenType(jwtUtils.getTokenFromBearer(bearerAuthorization)) != JwtType.ACCESS) {
       return new Response(500, "Access token required", new EmptyDataResponse());
@@ -68,6 +68,6 @@ public class TraitController extends BaseController {
 
   @GetMapping("/survey")
   public Response getTraitsSurvey() {
-    return new Response(200, "Survey successfully fetched", new TraitSurveyResponseData());
+    return new Response(200, "Survey successfully fetched", new TraitSurveyStartResponseData());
   }
 }
